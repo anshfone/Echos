@@ -4,42 +4,42 @@ import * as argon2 from "argon2";
 import { NextApiRequest, NextApiResponse } from "next";
 dotenv.config();
 
-const UserController = {
+const UserService = {
 
     async loginUser(req: NextApiRequest, res: NextApiResponse): Promise<void> {
      
     },
-    async getUsers(req: NextApiRequest, res: NextApiResponse): Promise<void> {
+    async getUsers(): Promise<any> {
         try {
+            //const image = await gfs.files.findOne({_id: 1})
             const users = await Users.find({});
-            res.json(users); 
+            console.log(users)
+            return users
           } catch (error) {
             console.error(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            return { error: 'Internal Server Error' };
           }
         },
-    async signUpUser(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-        try {
-            const userData = req.body 
+    async signUpUser(userData): Promise<any> {
+        try { 
             const user: any = await Users.findOne({email: userData.email})
             if (user) {
-              res.send({
+              return {
                 status: 400,
                 message: "User Already exists with this email"
-              })
+              }
             }
             else {
               const hashedPassword = await argon2.hash(userData.password)
               const newUser: any = new Users({username: userData.username, email: userData.email, password: hashedPassword});
               await newUser.save();
-              res.send({
+              return {
                 status: 200,
                 message: "Signup Successfull. Redirect to Login Page"
-              });
+              };
             }
         } catch (error) {
           console.log(error);
-          res.status(500);
         }
       },
     // async editUser(req: Request, res: Response): Promise<void> {
@@ -66,4 +66,4 @@ const UserController = {
     // }
 }
 
-export default UserController;
+export default UserService;

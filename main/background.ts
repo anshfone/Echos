@@ -2,7 +2,6 @@ import path from 'path'
 import { app, ipcMain } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
-import { connectToDatabase } from '../renderer/database/mongoConfig'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -14,7 +13,7 @@ if (isProd) {
 
 ;(async () => {
   await app.whenReady()
-
+  
   const mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
@@ -22,6 +21,7 @@ if (isProd) {
       preload: path.join(__dirname, 'preload.js'),
     },
   })
+  
   if (isProd) {
     await mainWindow.loadURL('app://./home')
   } else {

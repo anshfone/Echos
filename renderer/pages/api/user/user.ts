@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import UserController from "./userController";
+import UserService from "./userService";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;
-  console.log("Here");
   const { action } = req.query
 
   switch (method) {
@@ -11,26 +10,28 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
       switch (action) {
         case "all":
-          const users = UserController.getUsers(req,res);
+          const users = await UserService.getUsers();
           res.status(200).json({
             data: users,
           });
           break;
         default:
           res.status(400).json({ error: "Invalid action parameter" });
+          break
       }
-      break;
+      break
     case "POST":
       
       switch(action) {
         case "signup":
-          const signUpResponse = UserController.signUpUser(req,res)
+          const signUpResponse = await UserService.signUpUser(req.body)
           res.json({ signUpResponse })
+          break
       }
-    
-      
+      break
     default:
-      res.status(405).end(); // Method Not Allowed
+      res.status(405).end();
+      break
   }
 };
 // import type { NextApiRequest, NextApiResponse } from 'next'

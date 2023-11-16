@@ -9,6 +9,7 @@ dotenv.config();
 
 const username: string | undefined = encodeURIComponent(process.env.DB_USERNAME);
 const password: string | undefined = encodeURIComponent(process.env.DB_PASSWORD);
+console.log(username,password)
 export const mongoURI  = `mongodb+srv://${username}:${password}@cluster0.dhuquz9.mongodb.net/ECHOS`
 
 const setupGridFS = async (): Promise<any> => {
@@ -45,7 +46,7 @@ const setupGridFS = async (): Promise<any> => {
   })
 }
   
-export const connectToDatabase = async (): Promise<any> => {
+const connectToDatabase = async (): Promise<any> => {
     await mongoose.connect(mongoURI)
     console.log("Db connected")
     const { upload, gfs, gridfsBucket } = await setupGridFS()
