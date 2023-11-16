@@ -2,16 +2,38 @@ import { Users } from "../../../models/userModel";
 import dotenv from 'dotenv';
 import * as argon2 from "argon2";
 import { NextApiRequest, NextApiResponse } from "next";
+import { gfs } from "../../../database/mongoConfig";
 dotenv.config();
 
 const UserService = {
 
-    async loginUser(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-     
+    async loginUser(userData): Promise<any> {
+      const user: any = await Users.findOne({email: userData.email})
+      if (user) {
+        const passwordVerified = await argon2.verify(user.password,userData.password)
+        if (passwordVerified) {
+          return {
+            status: 200,
+            message: "Login Successfull",
+          };
+        }
+        else{
+          return {
+            status: 401,
+            message: "Wrong Password! Please try again."
+          }
+        }
+      }
+      else {
+        return {
+          status: 400,
+          message: "No User exists with this email."
+        }
+      }
     },
     async getUsers(): Promise<any> {
         try {
-            //const image = await gfs.files.findOne({_id: 1})
+            const image = await gfs.files.findOne({_id: 1})
             const users = await Users.find({});
             console.log(users)
             return users

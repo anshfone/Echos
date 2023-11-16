@@ -20,12 +20,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           break
       }
       break
+
     case "POST":
-      
       switch(action) {
         case "signup":
           const signUpResponse = await UserService.signUpUser(req.body)
           res.json({ signUpResponse })
+          break
+        
+        case "login":
+          const logInResponse = await UserService.loginUser(req.body)
+          res.json({ logInResponse })
           break
       }
       break
